@@ -1,3 +1,14 @@
+.indicator {
+  position: absolute;
+  bottom: -5px;
+  left: 0px;
+  height: 5px;
+  width: 0px;
+  background-color: rgb(50,50,200);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
 .tabs{
   overflow: hidden;
   position: relative;
@@ -7,6 +18,7 @@
   white-space: nowrap;
   left: 0px;
   position: relative;
+  transition: all 0.4s cubic-bezier(0.86, 0, 0.07, 1);
 }
 
 .tabs .container *{
