@@ -38,6 +38,8 @@ class DragList{
   constructor(list_selector, items_selector="li"){
     this.list = document.querySelector(list_selector);
     this.items = this.list.querySelectorAll(items_selector);
+    this.finalPosition = -1;
+    this.finalElementHover = null;
 
     this.handleDragStart = this.handleDragStart.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
@@ -89,8 +91,11 @@ class DragList{
     let result = DOMHelper.whereIs(item, mouseCoords);
     if(result == -1) return;
 
+    this.finalPosition = result;
+    this.finalElementHover = item;
+
     if(result == 1)
-      this.list.insertBefore(this.fakeElement,item.nextSibling)
+      this.list.insertBefore(this.fakeElement,item.nextSibling);
 
     if(result == 2)
       this.list.insertBefore(this.fakeElement,item);
@@ -99,10 +104,18 @@ class DragList{
 
   handleDragEnd(ev){
     let el = ev.currentTarget;
+    el.classList.remove("dragging");
     el.style.top = "";
     el.style.left = "";
-    el.classList.remove("dragging");
-    console.log(":(")
+
+
+
+    if(this.finalPosition == 1)
+      this.list.insertBefore(el,this.finalElementHover.nextSibling);
+
+    if(this.finalPosition == 2)
+      this.list.insertBefore(el,this.finalElementHover);
+
   }
 }
 
