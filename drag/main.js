@@ -9,11 +9,28 @@ class DOMHelper{
 
     if(pointerCoords.x > elCoords.left && pointerCoords.x < (elCoords.left + elCoords.width)){
       if(pointerCoords.y > elCoords.top && pointerCoords.y < (elCoords.top + elCoords.height)){
-        return el.style.background ="red";
+        //return el.style.background ="red";
+        return true;
       }
     }
 
-    el.style.background = "inherit";
+    return false;
+    //el.style.background = "inherit";
+  }
+
+  static whereIs(el, pointerCoords){
+    let elCoords = el.getBoundingClientRect();
+
+    if(pointerCoords.x > elCoords.left && pointerCoords.x < (elCoords.left + elCoords.width)){
+      if(pointerCoords.y > elCoords.top && pointerCoords.y < (elCoords.top + elCoords.height)){
+        //return el.style.background ="red";
+        if(pointerCoords.y > elCoords.top + (elCoords.height / 2)) return 1;
+        return 2;
+      }
+    }
+
+    return -1;
+    //el.style.background = "inherit";
   }
 }
 
@@ -56,10 +73,28 @@ class DragList{
   handleDrag(ev){
     let mouseCoords = {x:ev.clientX, y: ev.clientY};
     DOMHelper.move(ev.currentTarget, mouseCoords);
-    this.items.forEach(item => {
-      if (item == ev.currentTarget)return;
-      DOMHelper.isOver(item, mouseCoords)
-    });
+
+      if(DOMHelper.isOver(this.list,mouseCoords)){
+        this.items.forEach(item => this.compareElement(item,ev));
+      } else {
+        this.fakeElement.remove();
+      }
+
+
+  }
+
+  compareElement(item, ev){
+    let mouseCoords = {x:ev.clientX, y: ev.clientY};
+    if (item == ev.currentTarget)return;
+    let result = DOMHelper.whereIs(item, mouseCoords);
+    if(result == -1) return;
+
+    if(result == 1)
+      this.list.insertBefore(this.fakeElement,item.nextSibling)
+
+    if(result == 2)
+      this.list.insertBefore(this.fakeElement,item);
+
   }
 
   handleDragEnd(ev){
