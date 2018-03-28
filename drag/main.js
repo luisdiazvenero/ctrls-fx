@@ -1,4 +1,9 @@
-class DOMHelper{}
+class DOMHelper{
+  static move(el,coords){
+    el.style.top = (coords.y - (el.clientHeight / 2)) + "px";
+    el.style.left = (coords.x - (el.clientWidth / 2)) + "px";
+  }
+}
 
 class DragList{
   constructor(list_selector, items_selector="li"){
@@ -8,6 +13,8 @@ class DragList{
     this.handleDragStart = this.handleDragStart.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
+
+    this.canvas = document.createElement("canvas");
 
     this.bindEvents();
   }
@@ -22,14 +29,19 @@ class DragList{
 
   handleDragStart(ev){
     let el = ev.currentTarget;
+    ev.dataTransfer.setDragImage(this.canvas, 0,0);
     console.log(":)")
     el.classList.add("dragging");
   }
 
-  handleDrag(){}
+  handleDrag(ev){
+    DOMHelper.move(ev.currentTarget, {x:ev.clientX, y: ev.clientY});
+  }
 
   handleDragEnd(ev){
     let el = ev.currentTarget;
+    el.style.top = "";
+    el.style.left = "";
     el.classList.remove("dragging");
     console.log(":(")
   }
